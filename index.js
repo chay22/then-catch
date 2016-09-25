@@ -1,189 +1,227 @@
 'use strict'
 
-module.exports = ThenCatch$Factory()
-
-module.exports.use = promiseLib => {
-  return ThenCatch$Factory(promiseLib)
-}
-
 function ThenCatch$Factory (_Promise) {
   _Promise = _Promise || Promise
 
-  const hasCallbackRE = /.*function.+\(.*,\s*_?(callback|cb)_?\)/
+  /**
+   * Constructor.
+   * @param {Function} fn Promise executor.
+   */
+  function ThenCatch (fn) {
+    var p = new _Promise(function (resolve, reject) {
+      return fn(resolve, reject)
+    })
 
-  const ThenCatch = class ThenCatch extends _Promise {
-    /**
-     * Break Promise chain.
-     * @param  {Function} onResolve
-     * @param  {Function} onReject
-     */
-    done (onResolve, onReject) {
-      this.then(onResolve, onReject)
-        .catch(err => {
-          console.error(err.stack || err)
-        })
-    }
+    Object.setPrototypeOf(p, ThenCatch.prototype)
 
-    /**
-     * Resolve either fulfillment or rejection.
-     * @param  {Function}  fn
-     * @return {ThenCatch}
-     */
-    finally (fn) {
-      return this.catch(value => value).then(fn)
-    }
+    return p
+  }
 
-    /**
-     * Delay next fulfillment or rejection. If 'onReject'
-     * sets to true, the delayment will apply to next
-     * rejection.
-     * @param  {Number}   duration Time to delay in ms.
-     * @param  {Boolean}  onReject
-     * @return {ThenCatch}
-     */
-    delay (duration, onReject) {
-      if (typeof duration !== 'number') {
-        duration = 1000
-      }
+  /**
+   * Inherits
+   */
+  Object.setPrototypeOf(ThenCatch, _Promise)
+  Object.setPrototypeOf(ThenCatch.prototype, _Promise.prototype)
 
-      return this[onReject ? 'catch' : 'then'](value => {
-        return new this.constructor((resolve, reject) => {
-          setTimeout(() => onReject ? reject(value) : resolve(value), duration)
-        })
+  /**
+   * Break Promise chain.
+   * @param  {Function} onResolve
+   * @param  {Function} onReject
+   */
+  ThenCatch.prototype.done = function ThenCatch$done (onResolve, onReject) {
+    this.then(onResolve, onReject)
+      .catch(function (err) {
+        console.error(err.stack || err)
       })
+  }
+
+  /**
+   * Resolve either fulfillment or rejection.
+   * @param  {Function}  fn
+   * @return {ThenCatch}
+   */
+  ThenCatch.prototype.finally = function ThenCatch$finally (fn) {
+    return this.catch(function (results) {
+      return results
+    })
+    .then(fn)
+  }
+
+  /**
+   * Delay next fulfillment or rejection. If 'onReject'
+   * sets to true, the delayment will apply to next
+   * rejection.
+   * @param  {Number}   duration Time to delay in ms.
+   * @param  {Boolean}  onReject
+   * @return {ThenCatch}
+   */
+  ThenCatch.prototype.delay = function ThenCatch$delay (duration, onReject) {
+    if (typeof duration !== 'number') {
+      duration = 1000
     }
 
-    /**
-     * Attempt to resolve each Promise in sequence, one
-     * after another. If a value inside arr is a function,
-     * it will be given a resolved results value before it
-     * as first parameter and an initial resolved results
-     * value as second parameter.
-     * @param  {Array}    arr
-     * @param  {Boolean}  noReject
-     * @return {ThenCatch}
-     */
-    static sequence (arr, noReject) {
-      let initialValue
-      let promises = []
-      let p = this.resolve()
+    return this[onReject ? 'catch' : 'then'](function (results) {
+      return new ThenCatch(function (resolve, reject) {
+        setTimeout(function () {
+          onReject ? reject(results) : resolve(results)
+        }, duration)
+      })
+    })
+  }
 
-      for (let i = 0; i < arr.length; i++) {
-        let fn = arr[i]
+  /**
+   * Attempt to resolve each Promise in sequence, one
+   * after another. If a value inside arr is a function,
+   * it will be given a resolved results value before it
+   * as first parameter and an initial resolved results
+   * value as second parameter.
+   * @param  {Array}    arr
+   * @param  {Boolean}  noReject
+   * @return {ThenCatch}
+   */
+  ThenCatch.sequence = function ThenCatch$sequence (arr, noReject) {
+    var promises = [],
+        p = this.resolve(),
+        arrLen = arr.length,
+        initialValue, i
 
-        p = p.then((value) => {
-          if (
-            fn instanceof Promise &&
-            process.env.NODE_ENV !== 'production'
-          ) {
-            console.warn(
-              '[ThenCatch#sequence] Warning: assigning Promise into ' +
-              '#sequence argument array will execute the logic inside ' +
-              'it without waiting one after another. Use #all instead.'
-            )
-          }
-
-          if (typeof fn === 'function') {
-            fn = fn(value, initialValue)
-          }
-
-          if (i === 0) {
-            if (fn instanceof Promise) {
-              fn = fn.then(v => (initialValue = v))
-            } else {
-              initialValue = fn
-            }
-          }
-
-          return fn
-        })
-
-        if (noReject) {
-          p = p.finally(value => value)
-        }
-
-        promises.push(p)
-      }
-
-      return this.all(promises)
-    }
-
-    /**
-     * Attempt to resolve a rejected Promise for given
-     * times until it is resolved. If it still rejected
-     * once maximum attempt time been hit, the results
-     * value will be threw instead.
-     * @param  {Function}  fn     This function must return a Promise.
-     * @param  {Number}    max
-     * @param  {Number}    delay
-     * @return {ThenCatch}
-     */
-    static retry (fn, max, delay, _i) {
-      max = max || 3
-      _i = _i || 1
-      delay = delay || 0
-
-      return fn(_i)
-        .delay(delay, true)
-        .then(value => value)
-        .catch(err => {
-          if (_i < max) {
-            return this.retry(fn, max, delay, _i + 1)
-          }
-
-          throw err
-        })
-    }
-
-    /**
-     * Convert a nodeback function to return a Promise.
-     * @param  {Function}  fn
-     * @return {ThenCatch}
-     */
-    static promisify (fn) {
-      return function promisifiedFn () {
-        const self = this
-        let args = Array.prototype.slice.call(arguments)
-
-        return new ThenCatch((resolve, reject) => {
-          const callback = function promisifyCallback (err) {
-            if (err) {
-              reject(err)
-            } else {
-              resolve.apply(
-                self, Array.prototype.slice.call(arguments, 1)
-              )
-            }
-          }
-
-          args.push(callback)
-          fn.apply(self, args)
-        })
+    // Wrap #for() loop inside a function.
+    var loop = function (subject, fn) { // eslint-disable-line
+      for (i = 0; i < arrLen; i++) {
+        fn(subject[i], i)
       }
     }
 
-    /**
-     * Convert nodeback instance's function to return Promise.
-     * @param  {Object} obj
-     * @return {Object}
-     */
-    static promisifyAll (obj) {
-      const instance = Object.assign({}, obj)
-
-      for (const key in instance) {
-        const fn = instance[key]
+    loop(arr, function (value, i) {
+      p = p.then(function (results) {
+        var fn = value
 
         if (
-          typeof fn === 'function' &&
-          hasCallbackRE.test(fn.toString())
+          fn instanceof Promise &&
+          process.env.NODE_ENV !== 'production'
         ) {
-          instance[key] = this.promisify(fn)
+          console.warn(
+            '[ThenCatch#sequence] Warning: assigning Promise into ' +
+            '#sequence argument array will execute the logic inside ' +
+            'it without waiting one after another. Use #all instead.'
+          )
         }
+
+        if (typeof fn === 'function') {
+          fn = fn(results, initialValue)
+        }
+
+        // Store the results value of first iteration.
+        if (i === 0) {
+          if (fn instanceof Promise) {
+            fn = fn.then(function (v) {
+              return (initialValue = v)
+            })
+          } else {
+            initialValue = fn
+          }
+        }
+
+        return fn
+      })
+
+      if (noReject) {
+        p = p.finally(function (finalResults) {
+          return finalResults
+        })
       }
 
-      return instance
+      promises.push(p)
+    })
+
+    return this.all(promises)
+  }
+
+  /**
+   * Attempt to resolve a rejected Promise for given
+   * times until it is resolved. If it still rejected
+   * once maximum attempt time been hit, the results
+   * value will be threw instead.
+   * @param  {Function}  fn     This function must return a Promise.
+   * @param  {Number}    max
+   * @param  {Number}    delay
+   * @return {ThenCatch}
+   */
+  ThenCatch.retry = function ThenCatch$retry (fn, max, delay, _i) {
+    max = max || 3
+    _i = _i || 1
+    delay = delay || 0
+
+    return fn(_i)
+      .delay(delay, true)
+      .then(function (results) {
+        return results
+      })
+      .catch(function (err) {
+        if (_i < max) {
+          return ThenCatch.retry(fn, max, delay, _i + 1)
+        }
+
+        throw err
+      })
+  }
+
+  /**
+   * Convert a nodeback function to return a Promise.
+   * @param  {Function}  fn
+   * @return {ThenCatch}
+   */
+  ThenCatch.promisify = function ThenCatch$Promisify (fn) {
+    return function promisifiedFn () {
+      var self = this,
+          args = Array.prototype.slice.call(arguments)
+
+      return new ThenCatch(function (resolve, reject) {
+        function promisifyCallback (err) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve.apply(
+              self, Array.prototype.slice.call(arguments, 1)
+            )
+          }
+        }
+
+        args.push(promisifyCallback)
+        fn.apply(self, args)
+      })
     }
   }
 
+  var hasCallbackRE = /.*function.+\(.*,\s*_?(callback|cb)_?\)/ //eslint-disable-line
+  /**
+   * Convert nodeback instance's function to return Promise.
+   * @param  {Object} obj
+   * @return {Object}
+   */
+  ThenCatch.promisifyAll = function ThenCatch$promisifyAll (obj) {
+    var instance = Object.assign({}, obj),
+        key, fn
+
+    for (key in instance) {
+      fn = instance[key]
+
+      if (
+        typeof fn === 'function' &&
+        hasCallbackRE.test(fn.toString())
+      ) {
+        instance[key] = this.promisify(fn)
+      }
+    }
+
+    return instance
+  }
+
   return ThenCatch
+}
+
+module.exports = ThenCatch$Factory()
+
+module.exports.use = function (promiseLib) {
+  return ThenCatch$Factory(promiseLib)
 }
