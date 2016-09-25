@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "../.eslintrc"
+  ],
+
+  "rules": {
+    "one-var": [2, { "initialized": "never" }],
+    "vars-on-top": 0
+  }
+}

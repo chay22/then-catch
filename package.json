@@ -4,10 +4,15 @@
   "description": "Small Promise helper for node.",
   "main": "index.js",
   "standard": {
-    "globals": [ "describe", "it", "beforeEach", "afterEach" ]
+    "globals": [
+      "describe",
+      "it",
+      "beforeEach",
+      "afterEach"
+    ]
   },
   "scripts": {
-    "lint": "standard index.js test/*",
+    "lint": "eslint index.js test/*",
     "test": "mocha -A test/*.spec.js",
     "cover": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec"
   },
@@ -30,12 +35,12 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "coveralls": "^2.11.14",
+    "eslint": "^3.6.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.0.2",
     "mocha-lcov-reporter": "^1.2.0",
     "sinon": "^1.17.6",
-    "sinon-chai": "^2.8.0",
-    "standard": "^8.1.0"
+    "sinon-chai": "^2.8.0"
   },
   "engines": {
     "node": ">=4.0.0"
