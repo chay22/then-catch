@@ -13,7 +13,6 @@ function FakePromise (executor) {
 Object.setPrototypeOf(FakePromise, Promise)
 Object.setPrototypeOf(FakePromise.prototype, Promise.prototype)
 
-
 module.exports = {
   FakePromise: FakePromise,
 
