@@ -1,7 +1,7 @@
 'use strict'
 
 var expect = require('chai').expect
-var util = require('./util/util')
+var util = require('./util')
 var FakePromise = util.FakePromise
 var fnMock = util.fnMock
 
@@ -13,7 +13,7 @@ describe('ThenCatch', function () {
   })
 
   it('is subclass of native Promise', function (done) {
-    ThenCatch = require('../index.js')
+    ThenCatch = require('..')
 
     expect(ThenCatch.resolve()).to.be.an.instanceOf(Promise)
     expect(new ThenCatch(fnMock)).to.be.an.instanceOf(Promise)
@@ -22,7 +22,7 @@ describe('ThenCatch', function () {
   })
 
   it('can be a subclass of given Promise', function (done) {
-    ThenCatch = require('../index.js').use(FakePromise)
+    ThenCatch = require('..').use(FakePromise)
 
     expect(ThenCatch.resolve()).to.be.an.instanceOf(FakePromise)
     expect(new ThenCatch(fnMock)).to.be.an.instanceOf(FakePromise)

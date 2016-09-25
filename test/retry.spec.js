@@ -2,8 +2,8 @@
 
 var chai = require('chai')
 var sinon = require('sinon')
-var ThenCatch = require('../index.js')
-var util = require('./util/util')
+var ThenCatch = require('..')
+var util = require('./util')
 var start = util.start
 var end = util.end
 var expect = chai.expect

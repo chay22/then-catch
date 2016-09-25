@@ -3,7 +3,7 @@
 'use strict'
 
 var expect = require('chai').expect
-var ThenCatch = require('../index.js')
+var ThenCatch = require('..')
 
 describe('#finally()', function () {
   it('passes fulfillment value', function () {

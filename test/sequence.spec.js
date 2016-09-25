@@ -2,7 +2,7 @@
 
 var chai = require('chai')
 var sinon = require('sinon')
-var ThenCatch = require('../index.js')
+var ThenCatch = require('..')
 var expect = chai.expect
 
 chai.use(require('sinon-chai'))

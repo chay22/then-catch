@@ -1,8 +1,8 @@
 'use strict'
 
 var expect = require('chai').expect
-var ThenCatch = require('../index.js')
-var util = require('./util/util')
+var ThenCatch = require('..')
+var util = require('./util')
 var start = util.start
 var end = util.end
 

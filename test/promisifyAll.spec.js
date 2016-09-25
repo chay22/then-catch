@@ -3,8 +3,8 @@
 var chai = require('chai')
 var sinon = require('sinon')
 var fs = require('fs')
-var ThenCatch = require('../index.js')
-var util = require('./util/util')
+var ThenCatch = require('..')
+var util = require('./util')
 var expect = chai.expect
 
 chai.use(require('sinon-chai'))

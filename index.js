@@ -9,7 +9,7 @@ function ThenCatch$Factory (_Promise) {
 
   const hasCallbackRE = /.*function.+\(.*,\s*_?(callback|cb)_?\)/
 
-  return class ThenCatch extends _Promise {
+  const ThenCatch = class ThenCatch extends _Promise {
     /**
      * Break Promise chain.
      * @param  {Function} onResolve
@@ -182,4 +182,6 @@ function ThenCatch$Factory (_Promise) {
       return instance
     }
   }
+
+  return ThenCatch
 }
