@@ -1,0 +1,43 @@
+{
+  "name": "then-catch",
+  "version": "0.0.1",
+  "description": "Small Promise helper for node.",
+  "main": "index.js",
+  "standard": {
+    "globals": [ "describe", "it", "beforeEach", "afterEach" ]
+  },
+  "scripts": {
+    "lint": "standard index.js test/*.spec.js",
+    "test": "mocha -A test/*",
+    "cover": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec"
+  },
+  "keywords": [
+    "promise",
+    "javascript",
+    "node",
+    "asynchronous"
+  ],
+  "author": "Cahyadi Nugraha",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chay22/then-catch/issues"
+  },
+  "homepage": "https://github.com/chay22/then-catch#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chay22/then-catch"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "coveralls": "^2.11.14",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.0.2",
+    "mocha-lcov-reporter": "^1.2.0",
+    "sinon": "^1.17.6",
+    "sinon-chai": "^2.8.0",
+    "standard": "^8.1.0"
+  },
+  "engines": {
+    "node": ">=4.0.0"
+  }
+}
