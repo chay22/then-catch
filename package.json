@@ -7,7 +7,7 @@
     "globals": [ "describe", "it", "beforeEach", "afterEach" ]
   },
   "scripts": {
-    "lint": "standard index.js test/*",
+    "lint": "standard index.js test/* --verbose",
     "test": "mocha -A test/*.spec.js",
     "cover": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec"
   },

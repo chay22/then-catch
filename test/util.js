@@ -1,16 +1,18 @@
 'use strict'
 
 function FakePromise (executor) {
-    var p = new Promise(function (resolve, reject) {
-        return executor(resolve, reject)
-    })
+  var p = new Promise(function (resolve, reject) {
+    return executor(resolve, reject)
+  })
 
-    p.__proto__ = FakePromise.prototype
-    return p;
+  Object.setPrototypeOf(p, FakePromise.prototype)
+
+  return p
 }
 
-FakePromise.__proto__ = Promise
-FakePromise.prototype.__proto__ = Promise.prototype
+Object.setPrototypeOf(FakePromise, Promise)
+Object.setPrototypeOf(FakePromise.prototype, Promise.prototype)
+
 
 module.exports = {
   FakePromise: FakePromise,
@@ -29,3 +31,4 @@ module.exports = {
     return new Date().getTime() - time
   }
 }
+

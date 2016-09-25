@@ -1,3 +1,5 @@
+'use strict'
+
 module.exports = ThenCatch$Factory()
 
 module.exports.use = promiseLib => {
