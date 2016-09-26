@@ -35,7 +35,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "coveralls": "^2.11.14",
-    "eslint": "^3.6.0",
+    "eslint": "^2.13.1",
     "istanbul": "^0.4.5",
     "mocha": "^3.0.2",
     "mocha-lcov-reporter": "^1.2.0",
@@ -43,6 +43,6 @@
     "sinon-chai": "^2.8.0"
   },
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=0.12"
   }
 }

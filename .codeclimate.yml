@@ -1,0 +1,26 @@
+javascript: true
+engines: 
+  eslint:
+    enabled: true
+    channel: "eslint-3"
+  nodesecurity:
+    enabled: true
+    exclude_paths:
+      - "test/"
+  duplication:
+    enabled: true
+    config:
+      languages:
+        javascript:
+          mass_threshold: 20
+    exclude_paths:
+      - "test/"
+  markdownlint:
+    enabled: true
+ratings:
+  paths:
+    - "test/"
+    - "index.js"
+    - "**.md"
+exclude_paths:
+  - "node_modules/"

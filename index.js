@@ -1,5 +1,8 @@
 'use strict'
 
+/* istanbul ignore next */
+var extend = Object.assign || require('util')._extend
+
 function ThenCatch$Factory (_Promise) {
   _Promise = _Promise || Promise
 
@@ -55,7 +58,7 @@ function ThenCatch$Factory (_Promise) {
    * @param  {Boolean}  onReject
    * @return {ThenCatch}
    */
-  ThenCatch.prototype.delay = function ThenCatch$delay (duration, onReject) {
+  ThenCatch.prototype.sleep = function ThenCatch$sleep (duration, onReject) {
     if (typeof duration !== 'number') {
       duration = 1000
     }
@@ -153,7 +156,7 @@ function ThenCatch$Factory (_Promise) {
     delay = delay || 0
 
     return fn(_i)
-      .delay(delay, true)
+      .sleep(delay, true)
       .then(function (results) {
         return results
       })
@@ -199,8 +202,8 @@ function ThenCatch$Factory (_Promise) {
    * @param  {Object} obj
    * @return {Object}
    */
-  ThenCatch.promisifyAll = function ThenCatch$promisifyAll (obj) {
-    var instance = Object.assign({}, obj),
+  ThenCatch.promisifies = function ThenCatch$promisifies (obj) {
+    var instance = extend({}, obj),
         key, fn
 
     for (key in instance) {
