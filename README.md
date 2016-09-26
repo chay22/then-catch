@@ -47,6 +47,7 @@ tc.sequence([someFn, anotherFn, yetAnotherFn])
     }
   })
 ```
+> NOTE: Some methods has same name with any existing Promise libraries, thus will be overriden and will exactly has different behaviour than expected.
 
 ## Test
 Find more examples or run some test, checkout the [test](https://github.com/chay22/then-catch/tree/master/test) directory or run,
