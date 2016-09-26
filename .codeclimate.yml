@@ -3,10 +3,6 @@ engines:
   eslint:
     enabled: true
     channel: "eslint-3"
-  nodesecurity:
-    enabled: true
-    exclude_paths:
-      - "test/"
   duplication:
     enabled: true
     config:
