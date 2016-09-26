@@ -11,8 +11,6 @@ engines:
           mass_threshold: 20
     exclude_paths:
       - "test/"
-  markdownlint:
-    enabled: true
 ratings:
   paths:
     - "test/"
