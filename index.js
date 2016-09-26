@@ -1,5 +1,8 @@
 'use strict'
 
+/* istanbul ignore next */
+var extend = Object.assign || require('util')._extend
+
 function ThenCatch$Factory (_Promise) {
   _Promise = _Promise || Promise
 
@@ -200,7 +203,7 @@ function ThenCatch$Factory (_Promise) {
    * @return {Object}
    */
   ThenCatch.promisifies = function ThenCatch$promisifies (obj) {
-    var instance = Object.assign({}, obj),
+    var instance = extend({}, obj),
         key, fn
 
     for (key in instance) {
