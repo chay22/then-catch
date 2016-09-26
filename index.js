@@ -55,7 +55,7 @@ function ThenCatch$Factory (_Promise) {
    * @param  {Boolean}  onReject
    * @return {ThenCatch}
    */
-  ThenCatch.prototype.delay = function ThenCatch$delay (duration, onReject) {
+  ThenCatch.prototype.sleep = function ThenCatch$sleep (duration, onReject) {
     if (typeof duration !== 'number') {
       duration = 1000
     }
@@ -153,7 +153,7 @@ function ThenCatch$Factory (_Promise) {
     delay = delay || 0
 
     return fn(_i)
-      .delay(delay, true)
+      .sleep(delay, true)
       .then(function (results) {
         return results
       })
@@ -199,7 +199,7 @@ function ThenCatch$Factory (_Promise) {
    * @param  {Object} obj
    * @return {Object}
    */
-  ThenCatch.promisifyAll = function ThenCatch$promisifyAll (obj) {
+  ThenCatch.promisifies = function ThenCatch$promisifies (obj) {
     var instance = Object.assign({}, obj),
         key, fn
 

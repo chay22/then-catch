@@ -9,12 +9,12 @@ var expect = chai.expect
 
 chai.use(require('sinon-chai'))
 
-describe('#promisifyAll()', function () {
+describe('promisifies()', function () {
   var sandbox, fsPromise
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create()
-    fsPromise = ThenCatch.promisifyAll(fs)
+    fsPromise = ThenCatch.promisifies(fs)
   })
 
   afterEach(function () {
@@ -52,7 +52,7 @@ describe('#promisifyAll()', function () {
 
   it('does not convert an object to Promise', function (done) {
     function test () {
-      return ThenCatch.promisifyAll(util.notNodebackObjMock)
+      return ThenCatch.promisifies(util.notNodebackObjMock)
           .then(function () {})
     }
 
@@ -63,7 +63,7 @@ describe('#promisifyAll()', function () {
 
   it('does not convert normal (not nodeback styled) function to return Promise', function (done) {
     function test () {
-      return ThenCatch.promisifyAll(util.notNodebackFnMock)
+      return ThenCatch.promisifies(util.notNodebackFnMock)
           .then(function () {})
     }
 
