@@ -5,6 +5,7 @@
 
   "rules": {
     "one-var": [2, { "initialized": "never" }],
-    "vars-on-top": 0
+    "vars-on-top": 0,
+    "no-throw-literal": 0
   }
 }

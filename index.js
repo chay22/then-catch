@@ -116,7 +116,7 @@ function ThenCatch$Factory (_Promise) {
 
         // Store the results value of first iteration.
         if (i === 0) {
-          if (fn instanceof Promise) {
+          if (fn instanceof _Promise) {
             fn = fn.then(function (v) {
               return (initialValue = v)
             })
@@ -155,18 +155,20 @@ function ThenCatch$Factory (_Promise) {
     _i = _i || 1
     delay = delay || 0
 
-    return fn(_i)
-      .sleep(delay, true)
-      .then(function (results) {
-        return results
-      })
-      .catch(function (err) {
-        if (_i < max) {
-          return ThenCatch.retry(fn, max, delay, _i + 1)
-        }
+    return new ThenCatch(function (resolve) {
+      resolve(fn(_i))
+    })
+    .sleep(delay, true)
+    .then(function (results) {
+      return results
+    })
+    .catch(function (err) {
+      if (_i < max) {
+        return ThenCatch.retry(fn, max, delay, _i + 1)
+      }
 
-        throw err
-      })
+      throw err
+    })
   }
 
   /**

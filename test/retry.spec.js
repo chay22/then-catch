@@ -30,7 +30,7 @@ describe('retry()', function () {
     return ThenCatch.retry(function (attempt) {
       console.info('Ahoy ahoy!')
 
-      return ThenCatch.reject(42 + attempt)
+      throw 42 + attempt
     })
     .catch(function (results) {
       expect(results).to.equal(45)
@@ -89,13 +89,13 @@ describe('retry()', function () {
 
     return ThenCatch.retry(function (attempt) {
       if (attempt > 2) {
-        return ThenCatch.resolve('woohoo')
+        return 'woooohooo'
       }
 
-      return ThenCatch.reject(42 + attempt)
+      throw 42 + attempt
     }, 4, 150)
     .then(function (results) {
-      expect(results).to.equal('woohoo')
+      expect(results).to.equal('woooohooo')
       expect(end(startTime)).to.be.below(350) // should be 150 * 2
     })
   })
