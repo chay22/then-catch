@@ -7,6 +7,7 @@
 <p align="center">
   <a href="https://circleci.com/gh/chay22/then-catch"><img src="https://img.shields.io/circleci/project/chay22/then-catch.svg" alt="Build Status"></a>
   <a href="https://coveralls.io/github/chay22/then-catch?branch=master"><img src="https://img.shields.io/coveralls/chay22/then-catch/master.svg" alt="Coverage Status"></a>
+  <a href="https://codeclimate.com/github/chay22/then-catch"><img src="https://codeclimate.com/github/chay22/then-catch/badges/gpa.svg" alt="Code Quality"></a>
   <a href="https://www.npmjs.com/package/then-catch"><img src="https://img.shields.io/npm/v/then-catch.svg" alt="Version"></a>
   <a href="https://github.com/chay22/then-catch/blob/master/LICENSE"><img src="https://img.shields.io/github/license/chay22/then-catch.svg" alt="License"></a>
 </p>
@@ -47,6 +48,7 @@ tc.sequence([someFn, anotherFn, yetAnotherFn])
     }
   })
 ```
+> NOTE: Some methods has same name with any existing Promise libraries, thus will be overriden and will exactly has different behaviour than expected.
 
 ## Test
 Find more examples or run some test, checkout the [test](https://github.com/chay22/then-catch/tree/master/test) directory or run,
