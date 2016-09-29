@@ -138,7 +138,7 @@ ThenCatch.while(
   }
 )
 .then(results => console.log(results)) // output: NaN
-                                          (since prevValue from initial call is undefined)
+                                       // (since prevValue from initial call is undefined)
 
 ThenCatch.while(
   i => i < 5,
