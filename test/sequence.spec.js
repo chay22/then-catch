@@ -126,7 +126,7 @@ describe('sequence()', function () {
       })
   })
 
-  it('warns if values inside array is a Promise, if NODE_ENV is set into "production"', function () {
+  it('does not warn if values inside array is a Promise, if NODE_ENV is set into "production"', function () {
     process.env.NODE_ENV = 'production'
 
     var a = function () {
