@@ -37,7 +37,7 @@ ThenCatch.resolve(42)
 
 ## API
 ### ::sequence
-Resolves tasks one after another.
+Resolve task one after another.
 
 <pre><code>::<strong>sequence</strong>(<i>Array</i> <strong>tasks</strong>, <i>Boolean</i> <strong>noReject</strong>)</code></pre>
 
