@@ -72,20 +72,20 @@ ThenCatch.prototype.sleep = function ThenCatch$sleep (duration, onReject) {
 
 /**
  * Attempt to resolve each Promise in sequence, one
- * after another. If a value inside arr is a function,
+ * after another. If a value inside tasks is a function,
  * it will be given a resolved results value before it
  * as first parameter and an initial resolved results
  * value as second parameter.
- * @param  {Array}    arr
+ * @param  {Array}    tasks
  * @param  {Boolean}  noReject
  * @return {ThenCatch}
  */
-ThenCatch.sequence = function ThenCatch$sequence (arr, noReject) {
+ThenCatch.sequence = function ThenCatch$sequence (tasks, noReject) {
   var promises = [],
       p = this.resolve(),
       initialValue
 
-  $loop(arr, function (value, i) {
+  $loop(tasks, function (value, i) {
     p = p.then(function (results) {
       if (
         value instanceof Promise &&
@@ -133,7 +133,7 @@ ThenCatch.sequence = function ThenCatch$sequence (arr, noReject) {
  * times until it is resolved. If it still rejected
  * once maximum attempt time been hit, the results
  * value will be threw instead.
- * @param  {Function}  fn     This function must return a Promise.
+ * @param  {Function}  fn
  * @param  {Number}    max
  * @param  {Number}    delay
  * @return {ThenCatch}
@@ -194,7 +194,7 @@ ThenCatch.promisify = function ThenCatch$Promisify (fn) {
         args = Array.prototype.slice.call(arguments)
 
     return new ThenCatch(function (resolve, reject) {
-      function promisifyCallback (err) {
+      args.push(function (err) {
         if (err) {
           reject(err)
         } else {
@@ -202,9 +202,8 @@ ThenCatch.promisify = function ThenCatch$Promisify (fn) {
             self, Array.prototype.slice.call(arguments, 1)
           )
         }
-      }
+      })
 
-      args.push(promisifyCallback)
       fn.apply(self, args)
     })
   }
