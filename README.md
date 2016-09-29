@@ -79,6 +79,113 @@ ThenCatch.sequence([aTask, anotherTask, ordinaryTask, badTask], true)
   .then(results => console.log(results)) // output: [1, 2, 3, 22]
 ```
 
+---
+
+### ::retry
+Attempt to resolve a rejected Promise for given times until it is resolved. If it still rejected once maximum attempt time been hit, the results value will be threw instead.
+
+<pre><code>::<strong>retry</strong>(<i>Function</i> <strong>fn</strong>, <i>Number</i> <strong>max</strong>, <i>Number</i> <strong>delay</strong>)</code></pre>
+
+#### Parameters
+`fn` - Function to call. This function may return any value including Promise. A parameter, `attempt` will be passed to this function as a counter of times this function been called, starting from 1.
+
+`max` - Maximum retry attempt. Default to 3.
+
+`delay` - Delay time between each attempt in ms. Default to 0.
+
+#### Returns
+A Promise with resolved results value returned from `fn`.
+
+#### Example
+```javascript
+ThenCatch.retry(attempt => {
+  if (attempt < 2) {
+    return ThenCatch.reject()
+  )
+  
+  return ThenCatch.resolve(attempt)
+})
+.then(results => console.log(results)) // output: 3
+
+ThenCatch.retry(attempt => {
+  throw attempt
+})
+.then(results => console.log(results)) // this won't be called...
+.catch(err => console.error(err)) // output: 3
+```
+
+---
+
+### ::while
+Call a function repeatedly and stop while a function condition returns falsy. This method acts like `do-while` approach.
+
+<pre><code>::<strong>while</strong>(<i>Function</i> <strong>whileFn</strong>, <i>Function</i> <strong>doFn</strong>)</code></pre>
+
+#### Parameters
+`whileFn` - A function which its returned value used to indicates whether the `doFn` function should stop from being called. A parameter `i` passed as a counter of times the `doFn` function getting called, starting from 0.
+
+`doFn` - A function which will be called repeatedly. This function may return any value including Promise. Value returned from previous call will be passed as first parameter and the second parameter will contain a counter, like `whileFn`.
+
+#### Returns
+A Promise with resolved results value returned by `doFn`. If `doFn` results a rejection, the loop however will stop.
+
+#### Example
+```javascript
+ThenCatch.while(
+  i => i < 5,
+  (prevValue, i) => {
+    return prevValue + i
+  }
+)
+.then(results => console.log(results)) // output: NaN
+                                          (since prevValue from initial call is undefined)
+
+ThenCatch.while(
+  i => i < 5,
+  (prevValue, i) => {
+    if (i === 2) {
+      ThenCatch.reject(42)
+    }
+    
+    console.log('called') // called twice
+  }
+)
+.catch(err => console.log(err)) // output: 42
+```
+
+---
+
+### ::promisify
+Convert nodeback styled function to return a Promise.
+
+<pre><code>::<strong>promisify</strong>(<i>Function</i> <strong>fn</strong>)</code></pre>
+
+#### Parameters
+`fn` - Function to convert.
+
+#### Returns
+A function which will return a Promise.
+
+#### Example
+```javascript
+function nodeback (yesNo, callback) {
+  const logic = whatFn(yesNo ? 'mkay' : 'hurr durr')
+
+  if (logic) {
+    callback(null, logic)
+  } else {
+    callback(new MindBlowingError('hey!'))
+  }
+}
+
+const nodebackAsync = ThenCatch.promisify(nodeback)
+
+nodebackAsync(true)
+  .then(results => console.log(results))
+  .catch(err => console.error(err))
+// output? Use your imagination.
+```
+
 ## Test
 Find more examples or run some test, checkout the [test](https://github.com/chay22/then-catch/tree/master/test) directory or run,
 ```shell
