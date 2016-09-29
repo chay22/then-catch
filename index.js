@@ -152,10 +152,34 @@ ThenCatch.retry = function ThenCatch$retry (fn, max, delay, _i) {
   })
   .catch(function (err) {
     if (_i < max) {
-      return ThenCatch.retry(fn, max, delay, _i + 1)
+      return ThenCatch.retry(fn, max, delay, ++_i)
     }
 
     throw err
+  })
+}
+
+/**
+ * Execute a function repeatedly and stop while a function
+ * condition returns falsy.
+ * @param  {Function}  whileFn
+ * @param  {Function}  doFn
+ * @return {ThenCatch}
+ */
+ThenCatch.while = function ThenCatch$while (whileFn, doFn, _vPrev, _i) {
+  _i = _i || 0
+  _vPrev = doFn(_vPrev, _i)
+
+  return new ThenCatch(function (resolve) {
+    if (whileFn(_i)) {
+      resolve(
+        ThenCatch.while(
+          whileFn, doFn, _vPrev, ++_i
+        )
+      )
+    } else {
+      resolve(_vPrev)
+    }
   })
 }
 
@@ -209,6 +233,9 @@ ThenCatch.promisifies = function ThenCatch$promisifies (obj) {
   return instance
 }
 
+/**
+ * Faster forEach.
+ */
 function $loop (arr, fn) {
   var arrLen = arr.length, i
 
